@@ -161,13 +161,31 @@ BEAR_BOTTOMS = [{date:"2011-11-18",price:2.01}, {date:"2015-01-14",price:178},
 
 | Componente | Estado | Verificado |
 |------------|--------|------------|
-| Scaffolding | ⬜ Por hacer | No |
-| Datos bundled | ⬜ Por hacer | No |
-| Motor matematico | ⬜ Por hacer | No |
-| Charts | ⬜ Por hacer | No |
-| Layout | ⬜ Por hacer | No |
-| Educativo | ⬜ Por hacer | No |
+| Scaffolding (Vite + React 19 + TS + Tailwind) | ✅ Listo | `npm run build` OK |
+| Datos bundled (`btc-historical.ts`) | ✅ Listo | ~1400 puntos (blockchain.info) |
+| CoinGecko API client | ✅ Listo | Retry + timeout |
+| Merge + cache | ✅ Listo | localStorage 5min TTL |
+| Regresión OLS (Power Law) | ✅ Listo | ~R²=0.96, exp~5.4 |
+| FFT (Cooley-Tukey) | ✅ Listo | Float64Array in-place |
+| Análisis Fourier (fases + señal) | ✅ Listo | Top 8 armónicos + proyección 730d |
+| Canvas chart (log-log Power Law) | ✅ Listo | DPR, crosshair, tooltip |
+| lightweight-charts (residuos + Fourier) | ✅ Listo | Histograma + línea |
+| Layout + panel swapping | ✅ Listo | 55%/45% + expandir |
+| Sidebar + MetricCards | ✅ Listo | Z-score, percentil, R², sigma |
+| Capa educativa (modales) | ✅ Listo | 4 modales en español |
+| `npm run build` sin errores | ✅ Listo | 435KB gzip ~142KB |
+| `npm run dev` funciona | ✅ Listo | http://localhost:5173 |
+
+## Errores documentados (NO repetir)
+
+| Error | Solución |
+|-------|----------|
+| TypeScript `enum` con `erasableSyntaxOnly: true` | Usar `const obj = {} as const` + `type T = ...` |
+| lightweight-charts v5 `getSeries()` no existe | Usar `useRef<ISeriesApi[]>` + `chart.removeSeries(s)` |
+| `lineWidth: 1.5` en lightweight-charts v5 | Usar `lineWidth: 1 as 1` o `lineWidth: 2 as 2` |
+| `crosshair.vertLine.width` en CHART_THEME | Remover `crosshair` del CHART_THEME compartido |
+| Canvas DPR: escala acumulada en resize | Chequear si el tamaño cambió antes de re-escalar |
 
 ---
 
-*CLAUDE.md v1.0 — 2026-04-07*
+*CLAUDE.md v1.2 — 2026-04-07 — Build limpio, dev server funcional*
