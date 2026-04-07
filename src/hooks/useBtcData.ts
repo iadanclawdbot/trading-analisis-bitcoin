@@ -30,14 +30,16 @@ export function useBtcData(): UseBtcDataResult {
 
       if (cached) {
         livePoints = cached
+        const merged = mergeDataSources(BTC_HISTORICAL, livePoints)
+        setData(merged)
+        setStatus('cached')
       } else {
         livePoints = await fetch365DayHistory()
         cacheSet(CACHE_KEY_HISTORY, livePoints)
+        const merged = mergeDataSources(BTC_HISTORICAL, livePoints)
+        setData(merged)
+        setStatus('ready')
       }
-
-      const merged = mergeDataSources(BTC_HISTORICAL, livePoints)
-      setData(merged)
-      setStatus('ready')
       setLastUpdated(new Date())
       setError(null)
     } catch (err) {

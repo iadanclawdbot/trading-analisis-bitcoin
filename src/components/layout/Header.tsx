@@ -89,7 +89,7 @@ export function Header() {
               {PHASE_LABELS[phase]}
             </p>
             <p className="text-xs font-mono text-btc-muted">
-              {status === 'loading' ? 'Cargando...' : status === 'partial' ? 'Datos parciales' : 'En vivo'}
+              {status === 'loading' ? 'Cargando...' : status === 'partial' ? 'Solo histórico' : status === 'cached' ? 'Caché (5min)' : 'En vivo'}
             </p>
           </div>
         </div>

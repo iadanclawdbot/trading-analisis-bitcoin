@@ -93,6 +93,9 @@ export function ResidualsChart() {
         ])
       }
     }
+
+    // Ajustar viewport para mostrar todos los datos
+    chart.timeScale().fitContent()
   }, [residuals, regression])
 
   return <div ref={containerRef} className="w-full h-full" />

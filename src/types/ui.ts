@@ -5,7 +5,7 @@ export interface PanelLayout {
   bottomPanels: [PanelId, PanelId, PanelId]
 }
 
-export type DataStatus = 'loading' | 'partial' | 'ready' | 'error'
+export type DataStatus = 'loading' | 'partial' | 'cached' | 'ready' | 'error'
 
 export interface ModalContent {
   title: string

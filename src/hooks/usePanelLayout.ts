@@ -11,7 +11,7 @@ export function usePanelLayout() {
 
   const expandPanel = useCallback((panelId: PanelId) => {
     setLayout((prev) => {
-      if (prev.mainPanel === panelId) return prev // ya es el principal
+      if (prev.mainPanel === panelId) return DEFAULT_LAYOUT // toggle: volver al default
 
       const bottomIndex = prev.bottomPanels.indexOf(panelId)
       if (bottomIndex === -1) return prev

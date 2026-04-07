@@ -31,7 +31,7 @@ export function getDefaultTransform(data: MergedDataPoint[]): ChartTransform {
   const days = data.map((d) => d.dayIndex).filter((d) => d > 0)
   const prices = data.map((d) => d.price).filter((p) => p > 0)
 
-  const minDay = Math.max(201, Math.min(...days))
+  const minDay = Math.min(...days)
   const maxDay = Math.max(...days) * 1.1
   const minPrice = Math.min(...prices) * 0.5
   const maxPrice = Math.max(...prices) * 3
@@ -87,6 +87,7 @@ export function renderPowerLaw(
 
   // Clip al area del grafico
   ctx.save()
+  ctx.beginPath()
   ctx.rect(padding.left, padding.top, width - padding.left - padding.right, height - padding.top - padding.bottom)
   ctx.clip()
 
@@ -126,9 +127,8 @@ export function renderPowerLaw(
 
   // ---- Precio real BTC ----
   if (data.length > 1) {
+    // Construir el path una vez
     ctx.beginPath()
-    ctx.strokeStyle = COLORS.orange
-    ctx.lineWidth = 1.5
     ctx.setLineDash([])
     let first = true
     for (const d of data) {
@@ -138,6 +138,13 @@ export function renderPowerLaw(
       if (first) { ctx.moveTo(x, y); first = false }
       else ctx.lineTo(x, y)
     }
+    // Pasada 1: halo ancho y transparente (sin shadowBlur, sin costo de GPU)
+    ctx.lineWidth = 5
+    ctx.strokeStyle = COLORS.orange + '30'
+    ctx.stroke()
+    // Pasada 2: línea sólida encima
+    ctx.lineWidth = 2
+    ctx.strokeStyle = COLORS.orange
     ctx.stroke()
   }
 
@@ -270,11 +277,14 @@ function drawAxes(
   ctx.strokeStyle = COLORS.border2
   ctx.lineWidth = 1
 
-  // Eje Y (precios)
+  // Eje Y (precios) — con anti-overlap
   const priceTicks = generatePriceTicks(minPrice, maxPrice)
+  let lastTickY = Infinity
   for (const tick of priceTicks) {
     const y = dataY(tick.value, transform)
     if (y < padding.top || y > height - padding.bottom) continue
+    if (lastTickY - y < 18) continue
+    lastTickY = y
     ctx.beginPath()
     ctx.setLineDash([2, 4])
     ctx.strokeStyle = COLORS.border + '60'
@@ -283,14 +293,18 @@ function drawAxes(
     ctx.stroke()
     ctx.setLineDash([])
     ctx.textAlign = 'right'
+    ctx.fillStyle = COLORS.muted
     ctx.fillText(tick.label, padding.left - 5, y + 3)
   }
 
-  // Eje X (años)
+  // Eje X (días/meses/años) — con anti-overlap
   const dayTicks = generateDayTicks(minDay, maxDay)
+  let lastTickX = -Infinity
   for (const tick of dayTicks) {
     const x = dataX(tick.dayIndex, transform)
     if (x < padding.left || x > width - padding.right) continue
+    if (x - lastTickX < 50) continue
+    lastTickX = x
     ctx.beginPath()
     ctx.setLineDash([2, 4])
     ctx.strokeStyle = COLORS.border + '60'
@@ -299,6 +313,7 @@ function drawAxes(
     ctx.stroke()
     ctx.setLineDash([])
     ctx.textAlign = 'center'
+    ctx.fillStyle = COLORS.muted
     ctx.fillText(tick.label, x, height - padding.bottom + 15)
   }
 

@@ -2,7 +2,6 @@ import { useEffect, useRef } from 'react'
 import { createChart, LineSeries } from 'lightweight-charts'
 import { useDashboard } from '../../context/DashboardContext'
 import { CHART_THEME, COLORS } from '../../constants/theme'
-import { GENESIS_TIMESTAMP, DAY_MS, REGRESSION_MIN_DAY } from '../../constants/bitcoin'
 import type { ISeriesApi, SeriesType } from 'lightweight-charts'
 
 export function FourierChart() {
@@ -36,9 +35,6 @@ export function FourierChart() {
     }
     seriesRef.current = []
 
-    const baseDay = REGRESSION_MIN_DAY + 1
-    const startTs = Math.floor((GENESIS_TIMESTAMP + baseDay * DAY_MS) / 1000)
-
     // Serie de residuos reales (gris tenue)
     const realSeries = chart.addSeries(LineSeries, {
       color: COLORS.muted + '40',
@@ -68,13 +64,15 @@ export function FourierChart() {
       })
       seriesRef.current.push(reconSeries as ISeriesApi<SeriesType>)
 
+      // Reconstrucción histórica: usar timestamps reales de los residuos
+      // Esto sincroniza el armónico con los datos reales (2010→hoy)
       const reconData = Array.from(reconstructed.values).slice(0, projIdx).map((v, i) => ({
-        time: (startTs + i * 86400) as number,
+        time: Math.floor(residuals.timestamps[i] / 1000) as number,
         value: v,
       }))
       if (reconData.length > 0) reconSeries.setData(reconData as never)
 
-      // Forecast (verde punteado)
+      // Forecast (verde punteado): continúa diariamente desde el último punto real
       const forecastSeries = chart.addSeries(LineSeries, {
         color: COLORS.green + 'a0',
         lineWidth: 1 as 1,
@@ -85,8 +83,9 @@ export function FourierChart() {
       })
       seriesRef.current.push(forecastSeries as ISeriesApi<SeriesType>)
 
+      const lastRealTs = Math.floor(residuals.timestamps[residuals.timestamps.length - 1] / 1000)
       const forecastData = Array.from(reconstructed.values).slice(projIdx - 1).map((v, i) => ({
-        time: (startTs + (projIdx - 1 + i) * 86400) as number,
+        time: (lastRealTs + i * 86400) as number,
         value: v,
       }))
       if (forecastData.length > 0) forecastSeries.setData(forecastData as never)
@@ -108,6 +107,9 @@ export function FourierChart() {
         { time: realData[realData.length - 1].time as never, value: 0 },
       ])
     }
+
+    // Ajustar viewport para mostrar todos los datos
+    chart.timeScale().fitContent()
   }, [residuals, reconstructed, fourierResult])
 
   return <div ref={containerRef} className="w-full h-full" />

@@ -69,6 +69,30 @@ export function generateTradingSignal(
     }
   }
 
+  // Cubrir el gap: Distribution con z-score levemente positivo (0 < z <= 0.5)
+  if (zScore > 0 && phase === MarketPhase.DISTRIBUTION) {
+    return {
+      signal: SignalType.SELL,
+      confidence: Math.round(lerp(55, 60, zScore / 0.5)),
+      reasoning: 'Sobre el valor justo en fase de distribución',
+      zScore,
+      phase,
+      percentile,
+    }
+  }
+
+  // Cubrir el gap: Bearish con z-score levemente negativo (-0.5 <= z < 0)
+  if (zScore < 0 && phase === MarketPhase.BEARISH) {
+    return {
+      signal: SignalType.BUY,
+      confidence: Math.round(lerp(55, 60, Math.abs(zScore) / 0.5)),
+      reasoning: 'Debajo del valor justo en fase bajista',
+      zScore,
+      phase,
+      percentile,
+    }
+  }
+
   return {
     signal: SignalType.HOLD,
     confidence: 50,
