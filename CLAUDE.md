@@ -136,6 +136,7 @@ git push             # Push a iadanclawdbot/trading-analisis-bitcoin
 9. **Los datos bundled son el fallback** — si CoinGecko falla, el dashboard igual funciona
 10. **Leer TASK.md al inicio de cada sesión** para ver el estado actual
 11. **Preguntar qué cuenta de GitHub usar** antes de crear repos o hacer push
+12. **Actualizar CHANGELOG.md antes de cada push** — agregar una entrada con la fecha, los cambios realizados y la categoría (Agregado / Corregido / Cambiado / Eliminado)
 
 ---
 
