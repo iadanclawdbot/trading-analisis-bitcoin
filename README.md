@@ -1,54 +1,41 @@
-# React + TypeScript + Vite
+# Bitcoin Power Law Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Dashboard web educativo sobre la **Ley de Potencia de Bitcoin**. Muestra el modelo matemático de regresión log-log, análisis de Fourier de ciclos, y señales de trading basadas en z-score.
 
-Currently, two official plugins are available:
+Pensado para un canal de YouTube: todo en español, sin jerga matemática, con gráficos interactivos.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Stack
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+```
+React 19 + TypeScript 5 + Vite 6
+Tailwind CSS 3 (tema terminal oscuro)
+lightweight-charts v5 (residuos y Fourier)
+Canvas 2D custom (gráfico Power Law log-log)
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Sin backend. Todo client-side. CoinGecko free API para datos en vivo.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Características
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+- **Gráfico Power Law (log-log)** con zoom interactivo (scroll), pan (drag), reset (doble clic)
+- **Ejes adaptativos** al nivel de zoom: años → meses → semanas → días
+- **Análisis de Fourier** con reconstrucción de ciclos y proyección a 730 días
+- **Señal de trading** en tiempo real (COMPRA / HOLD / VENTA) con z-score y percentil
+- **4 paneles** intercambiables: Power Law, Residuos, Fourier, Ciclos históricos
+- **Modales educativos** en español para cada sección
+- **Cache localStorage** 5 min con indicador de estado (En vivo / Caché / Solo histórico)
+
+## Desarrollo
+
+```bash
+npm install
+npm run dev       # http://localhost:5173
+npm run build     # build producción
+npm run preview   # preview del build
 ```
+
+## Deploy
+
+Vercel detecta Vite automáticamente. Conectar el repo y deployar sin configuración adicional.
+
+Repo: https://github.com/iadanclawdbot/trading-analisis-bitcoin
