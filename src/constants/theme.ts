@@ -54,6 +54,7 @@ export const CHART_THEME = {
     textColor: '#94a3b8',
     fontSize: 11,
     fontFamily: '"JetBrains Mono", monospace',
+    attributionLogo: false,
   },
   grid: {
     vertLines: { color: '#1e293b' },
